@@ -1,0 +1,13 @@
+.vscode/
+
+node_modules/
+dist/
+
+notes.txt
+debug.js
+
+credentialsGDrive.json
+tokenGDrive.json
+
+!test/testFiles/tokenGDrive.json
+!test/testFiles/credentialsGDrive.json

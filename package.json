@@ -1,0 +1,40 @@
+{
+  "name": "utils-google-drive",
+  "version": "5.0.0",
+  "description": "A simple and flexible package for interacting with Google Drive",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "./node_modules/.bin/tsc",
+    "test": "./node_modules/mocha/bin/mocha --ignore test/getToken.js",
+    "docs": "./generateDocs.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/curtcommander/utils-google-drive.git"
+  },
+  "keywords": [
+    "google",
+    "drive",
+    "API"
+  ],
+  "author": "Curt Commander",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/curtcommander/utils-google-drive/issues"
+  },
+  "homepage": "https://curtcommander.github.io/utils-google-drive",
+  "dependencies": {
+    "@googleapis/drive": "^3.0.1",
+    "limiter": "^2.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.3",
+    "mocha": "^9.2.2",
+    "typedoc": "^0.23.18",
+    "typescript": "^4.8.2"
+  }
+}

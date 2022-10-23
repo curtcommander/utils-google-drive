@@ -1,0 +1,17 @@
+.git/
+.vscode/
+
+docs/
+node_modules/
+src/
+
+.gitignore
+.travis.yml
+
+debug.js
+CHANGELOG.md
+credentialsGDrive.json*
+notes.txt
+package-lock.json
+tokenGDrive.json*
+tsconfig.json
