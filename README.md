@@ -16,79 +16,71 @@ Perform the following actions on files and folders in Google Drive:
  - Make folders
 
 Also features:
- - Flexible file/folder specification
- - Request throttling
  - Batch requests
+ - Flexible file/folder specification
+ - Rate limiting
+ - Exponential backoff
  
 ## **Examples**
 ```javascript
-const utilsGDrive = require('utils-google-drive');
+const { UtilsGDrive } = require("utils-google-drive");
+const utilsGDrive = new UtilsGDrive();
  
-/* get metadata */
-// get id of file in Google Drive whose name is 'fileName'
-// and whose parent folder is named 'parentName'
+// get id of file in Google Drive whose name is "todos.txt"
+// and whose parent folder is named "lists"
 utilsGDrive.getFileId({
-  fileName: 'fileName',
-  parentName: 'parentName'
-}).then(fileId => {console.log(fileId)});
+  fileName: "todos.txt",
+  parentName: "lists"
+}).then(fileId => { console.log(fileId) });
 
-/* download */
-// download file 'excelFile.xlsx' in the folder 'dataFolder'
-// to the local folder 'driveDownloads'
+// download file "transactions.xlsx" in the folder "dataDrive"
+// to the local folder "dataLocal"
 utilsGDrive.download({
-  fileName: 'excelFile.xlsx',
-  parentName: 'dataFolder'
-}, 'path/to/driveDownloads');
+  fileName: "transactions.xlsx",
+  parentName: "dataDrive"
+}, "path/to/dataLocal");
 
-/* upload */
-// upload file 'report.pdf' to the folder in Google Drive
-// with the id 'folderId'
+// upload file "report.pdf" to the folder in Google Drive
+// with the id "XXX123XXX"
 utilsGDrive.upload({
-  localPath: 'path/to/report.pdf',
-  parentIdentifiers: 'folderId' 
+  localPath: "path/to/report.pdf",
+  parentIdentifiers: "XXX123XXX" 
 });
 
-/* move */
-// move folder 'reports2020' to the folder 'reports'
-utilsGDrive.move('path/to/reports2020', 'path/to/reports');
+// move folder "2022" to the folder "reports"
+utilsGDrive.move("path/to/2022", "path/to/reports");
 
-/* rename */
-// change name of folder from 'beforeName' to 'afterName'
-utilsGDrive.rename({folderName: 'beforeName'}, 'afterName');
+// change name of folder from "repolts" to "reports"
+utilsGDrive.rename({folderName: "repolts"}, "reports");
 
-/* delete */
-// delete file with id 'fileId'
-utilsGDrive.del('fileId');
+// delete file with id "XXX123XXX"
+utilsGDrive.del("XXX123XXX");
 
-/* make folder */
-// make a new folder named 'newFolder' in the folder 'parentFolder'
+// make a new folder named "Colombia" in the folder "countries"
 utilsGDrive.makeFolder({
-  folderName: 'newFolder',
-  parentIdentifiers: {fileName: 'parentFolder'}
+  folderName: "Colombia",
+  parentIdentifiers: { fileName: "countries" }
 });
 
-/* batch request */
-// create array of objects
-// each object in the array represents a request
+// make a batch request
 const requests = [
- {
-    url: 'https://www.googleapis.com/drive/v3/files?q=name%20%3D%20%22Daily%20Logs%22',
-    method: 'GET',
- },
- {
-    url: 'https://www.googleapis.com/drive/v3/files/fileId/watch',
-    method: 'POST',
+  {
+    url: "https://www.googleapis.com/drive/v3/files?q=name%20%3D%20%22Daily%20Logs%22",
+    method: "GET",
+  },
+  {
+    url: "https://www.googleapis.com/drive/v3/files/fileId/watch",
+    method: "POST",
     data: {
       "kind": "api#channel",
       "id": "channelId"
-       ...
     }
- }
+  }
 ];
 
-// make batch request
-utilsGDrive.batch(requests)
-.then(responses => {console.log(responses)});
+utilsGDrive.batch(requests).then(responses => {
+  console.log(responses)
+});
 
 ```
 
@@ -96,23 +88,64 @@ utilsGDrive.batch(requests)
 ```
 npm i utils-google-drive
 ```
- 
+
 ## **Setup**
 You'll need to set up a Google Cloud project to access your user account's Google Drive. You'll also
 need to enable the Google Drive API and create desktop application credentials in the Google Cloud Console.
-Consult this [quickstart](https://developers.google.com/drive/api/v3/quickstart/nodejs) for steps for completing these prerequisites. Be sure you're logged in to the correct Google account when completing these tasks.
+Consult this [quickstart](https://developers.google.com/drive/api/v3/quickstart/nodejs) for steps on how to complete these prerequisites. Be sure you're logged in to the correct Google account when completing these tasks.
 
-Once you've downloaded the credentials file, place it in your working directory and ensure it is named credentialsGDrive.json. The first time a method from utils-google-drive is executed, you'll be prompted in the console to authorize the app. Follow the link and enter the code. A file named tokenGDrive.json containing an authorization token will be created in your working directory and setup will then be complete.
+You'll also need to get an access token after you've downloaded the OAuth 2.0 credentials. A stand-alone function named `getTokenGDrive` is included in this package and facilitates obtaining an access token. Simply import the function and call it:
 
-## **Flexible file/folder specification**
+```javascript
+const { getTokenGDrive } = require("utils-google-drive");
+getTokenGDrive({ pathCredentials: "path/to/oAuthCredentials.json" }).catch(console.error);
+
+```
+
+## **Flexible File/Folder Specification**
 utils-google-drive allows files and folders in Google Drive to be specified by either name or id. Information on the parent folder can and many times should also be included. Specifying a parent will resolve the ambiguity of trying to access a file or folder by name when there are multiple files/folders in Google Drive with that name.
 
 Objects with the properties `fileId`, `fileName`, `parentId`, and `parentName` are generally used to specify a file or folder and are passed as arguments to utils-google-drive methods. For convenience, a string containing the file/folder id or path to the file or folder in Google Drive may be passed instead.
 
-If specifying a path, partial paths can be used and are encouraged. Ideally, you would specify a partial path that contains just enough information to uniquely identify the file in Google Drive. For example, suppose you wanted to download the file 'annualReport.pdf' in the folder 'reports2020'. If there are multiple files named 'annualReport.pdf' in Google Drive but no other folders with the name 'reports2020', you could use the partial path `'reports2020/annualReport.pdf'` to identify the file of interest. This path is preferable to a longer one because it finds the file quicker, jumping in at the uniquely-named folder 'reports2020' and not worrying itself with folders that are higher up in the file path.
+If specifying a path, partial paths can be used and are encouraged. Ideally, you would specify a partial path that contains just enough information to uniquely identify the file in Google Drive. For example, suppose you wanted to download the file "annualReport.pdf" in the folder "reports". If there are multiple files named "annualReport.pdf" in Google Drive but no other folders with the name "reports", you could use the partial path "reports/annualReport.pdf" to identify the file of interest. This path is preferable to a longer one because it finds the file quicker, jumping in at the uniquely named folder "reports" and not worrying itself with folders that are higher up in the file path.
 
-There is some variation in how to specify a file or folder across utils-google-drive methods. Consult the [docs](https://curtcommander.github.io/utils-google-drive/) for details.
+There is some variation regarding how to specify a file or folder across utils-google-drive methods. When in doubt, consult the [docs](https://curtcommander.github.io/utils-google-drive/).
 
-## **Request Throttling**
+As a best practice, favor specifying ids over filenames. Under the hood, a filename is resolved to an id with an extra API call. Specify and work with ids where you can to avoid these extra API calls and improve performance.
 
-utils-google-drive uses [throttled-queue](https://www.npmjs.com/package/throttled-queue) to throttle API requests. The default rate is 2 requests per 200 ms which complies with the Google Drive API's default rate limit of 1,000 requests per 100 seconds per user. You can adjust the throttle rate using the `nRequests` and `interval` variables in this package's index.js file. Note that setting an interval of less than 200 ms can cause performance issues.
+## **Rate Limiting**
+
+utils-google-drive performs client-side rate limiting. The default is 1,000 requests per 100 seconds, which is the same as Google's default per-user rate limit. You can configure the rate limit as an option when initializing the `UtilsGDrive` base class:
+
+```javascript
+const { UtilsGDrive } = require("utils-google-drive");
+
+const utilsGDrive = new UtilsGDrive(null, {
+  // rate limit of 10 requests per second
+  rateLimiter: {
+    tokensPerInterval: 10,
+    interval: 1000
+  }
+});
+
+```
+
+Note that setting an interval of less than 200ms can cause performance issues.
+
+## **Exponential Backoff**
+
+You can also configure how exponential backoff is implemented as one of the `UtilsGDrive` base class's options. An API call is retried a maximum of three times for any error thrown by default, but you can change the max number of retries as well as provide your own function for determining what errors warrant a retry.
+
+```javascript
+const { UtilsGDrive } = require("utils-google-drive");
+
+const utilsGDrive = new UtilsGDrive(null, {
+  expBack: {
+    // only 5xx errors should be retried
+    shouldRetry: error => error.status >= 500,
+    // max mumber of retries is 5
+    maxRetries: 5
+  }
+});
+
+```
