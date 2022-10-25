@@ -8,15 +8,35 @@ import { refreshAccessToken } from '../utils/refreshAccessToken';
 import { UtilsGDriveError } from '../utils/utilsGDriveError';
 import { ApplyExpBack } from '../utils/ApplyExpBack';
 
+/**
+ * An API call in a batch request.
+ */
 export interface Call$Batch {
+  /**
+   * Url for calling Google Drive API.
+   */
   url: string,
+  /**
+   * HTTP request method.
+   */
   method: 'GET' | 'HEAD' | 'POST' | 'DELETE' | 'PUT' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'PATCH',
-  data: Record<string, any>,
-  headers: { Authorization: string }
+  /**
+   * Request body.
+   */
+  data?: Record<string, any>
 }
 
+/**
+ * Response from an API call in a batch request.
+ */
 export interface Response$Batch extends Call$Batch {
+  /**
+   * Response status.
+   */
   responseStatus: number,
+  /**
+   * Response data.
+   */
   responseData: Record<string, any>
 }
 

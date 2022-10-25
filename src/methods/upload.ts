@@ -29,9 +29,22 @@ const mimeTypesByExt: { [ext: string]: string} = {
   ppt:  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
 };
 
+/**
+ * Parameters for uploading a file to Google Drive.
+ */
 export interface Params$Upload {
+  /**
+   * Location of file to be uploaded.
+   */
   localPath: string,
+  /**
+   * Identifiers of parent folder where the file should be uploaded.
+   */
   parentIdentifiers?: utils.Identifiers | string,
+  /**
+   * Delete any files or folders with the same name, location, and MIME type as the
+   * file to be uploaded in Google Drive.
+   */
   overwrite?: boolean,
 }
 
@@ -97,7 +110,7 @@ export async function upload(this: UtilsGDrive, params: Params$Upload | string):
   async function handleFileUpload(utilsGDrive: UtilsGDrive): Promise<string> {
     // file metadata
     const mimeType = mimeTypesByExt[path.extname(localPath).slice(1)];
-    const fileMetadata: utils.FileMetadata = {
+    const fileMetadata: utils.FileMetadata$Overwrite = {
       name: fileName,
       mimeType,
       parents: [parentId],
@@ -112,7 +125,7 @@ export async function upload(this: UtilsGDrive, params: Params$Upload | string):
 
 }
 
-async function uploadFile(utilsGDrive: UtilsGDrive, localPath: string, fileMetadata: utils.FileMetadata): Promise<string> {
+async function uploadFile(utilsGDrive: UtilsGDrive, localPath: string, fileMetadata: utils.FileMetadata$Overwrite): Promise<string> {
   // https://developers.google.com/drive/api/guides/folder
   const data = await utilsGDrive.call<Record<string, any>, drive_v3.Schema$File, 'files'>('files', 'create', {
     resource: fileMetadata,

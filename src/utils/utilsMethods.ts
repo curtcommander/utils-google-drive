@@ -7,11 +7,29 @@ import { UtilsGDriveError } from './utilsGDriveError';
 
 import { Identifiers$GetFileId } from '../methods/getFileId';
 
-// fileName required if fileId not specified
+/**
+ * Values for identifying a file or folder in Google Drive.
+ * `fileName` is required if `fileId` is not specified.
+ * If `fileName` is specified and there are multiple files 
+ * or folders in Google Drive with that filename,
+ * `parentId` or `parentName` should also be specified.
+ */
 export interface Identifiers {
+  /**
+   * Id of the file or folder.
+   */
   fileId?: string,
+  /**
+   * Name of the file or folder.
+   */
   fileName?: string,
+  /**
+   * Id of the file or folder's parent.
+   */
   parentId?: string,
+  /**
+   * Name of the file or folder's parent.
+   */
   parentName?: string
 }
 
@@ -51,13 +69,25 @@ export async function resolveIdString(utilsGDrive: UtilsGDrive, str: string): Pr
   return currentId;
 }
 
-export type FileMetadata = {
+/**
+ * Metadata for identifying files and folders to be overwritten in Google Drive.
+ */
+export type FileMetadata$Overwrite = {
+  /**
+   * Name of file or folder being written or created.
+   */
   name: string,
+  /**
+   * MIME type of file or folder beign written or created.
+   */
   mimeType: string,
+  /**
+   * Ids of parents of file or folder being written or created.
+   */
   parents: string[]
 }
 
-export async function overwrite(utilsGDrive: UtilsGDrive, fileMetadata: FileMetadata) {
+export async function overwrite(utilsGDrive: UtilsGDrive, fileMetadata: FileMetadata$Overwrite) {
   const { name, mimeType, parents } = fileMetadata;
   const q = `name='${name}' and mimeType='${mimeType}' and '${parents[0]}' in parents and trashed=false`;
   const data = await utilsGDrive.listFiles({ q });

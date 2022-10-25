@@ -7,7 +7,13 @@ import { UtilsGDrive } from '..';
 import { ApplyExpBack } from '../utils/ApplyExpBack';
 import { resolveId, Identifiers } from '../utils/utilsMethods';
 
+/**
+ * Identifiers for file to be downloaded.
+ */
 export interface Identifiers$Download extends Identifiers {
+  /**
+   * MIME type of file to be downloaded.
+   */
   mimeType: string
 }
 

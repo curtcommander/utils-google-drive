@@ -5,7 +5,14 @@ import * as google from '@googleapis/drive';
 import { UtilsGDrive } from '..';
 import { ApplyExpBack } from '../utils/ApplyExpBack';
 
+/**
+ * Possible values of `reource` parameter in `UtilsGDrive.call()` method. 
+ */
 export type Resource$Call = 'about' | 'changes' | 'channels' | 'comments' | 'context' | 'drives' | 'files' | 'permissions' | 'replies' | 'revisions' | 'teamdrives';
+
+/**
+ * Possible values of `method` parameter in `UtilsGDrive.call()` method.
+ */
 export type Method$Call<T extends Resource$Call> =
   T extends 'about' ? 'context' | 'get' :
   T extends 'changes' ? 'context' | 'getStartPageToken' | 'list' | 'watch' :

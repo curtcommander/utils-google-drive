@@ -1,11 +1,16 @@
 'use strict';
 
-export interface ShouldRetry$ExpBack {
-    (err: any): boolean;
-}
-
+/**
+ * Configuration for exponential backoff behavior.
+ */
 export interface Opts$ExpBack {
-    shouldRetry?: ShouldRetry$ExpBack,
+    /**
+     * Function that determines whether the error thrown warrants a retry.
+     */
+    shouldRetry?: (err: any) => boolean,
+    /**
+     * The maxmium number of retries to perform.
+     */
     maxRetries?: number
 }
 

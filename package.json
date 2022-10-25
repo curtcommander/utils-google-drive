@@ -8,7 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "./node_modules/.bin/tsc",
+    "build": "rm -r ./dist/*; ./node_modules/.bin/tsc",
     "test": "./node_modules/mocha/bin/mocha --ignore test/getTokenGDrive.js",
     "docs": "./generateDocs.sh"
   },
