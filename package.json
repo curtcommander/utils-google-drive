@@ -10,6 +10,7 @@
   "scripts": {
     "build": "rm -r ./dist/*; ./node_modules/.bin/tsc",
     "test": "./node_modules/mocha/bin/mocha --ignore test/getTokenGDrive.js",
+    "test:getToken": "./test/getTokenGDrive.",
     "docs": "./generateDocs.sh"
   },
   "repository": {
