@@ -37,18 +37,42 @@ export { Params$Upload } from './methods/upload';
 
 export { drive_v3, StreamMethodOptions } from '@googleapis/drive';
 
-export interface Params$UtilsGDrive {
+/**
+ * Authentication parameters for initializing `UtilsGDrive` base class.
+ */
+export interface Auth$UtilsGDrive {
+  /**
+   * The credentials used for authentication.
+   */
   credentials?: Credentials$GoogleApi | string,
-  token?: Token$GoogleApi | string ,
+  /**
+   * The token used for authentication.
+   */
+  token?: Token$GoogleApi | string,
+  /**
+   * Path to file containing credentials.
+   */
   pathCredentials?: string,
+  /**
+   * Path to file containing token.
+   */
   pathToken?: string
 }
 
 export { Credentials$GoogleApi, Token$GoogleApi };
 
+/**
+ * Options for UtilsGDrive base class.
+ */
 export interface Opts$UtilsGDrive {
   rateLimiter?: {
+    /**
+     * Number of API calls that can be made within given interval.
+     */
     tokensPerInterval: number,
+    /**
+     * Interval of time in miliseconds.
+     */
     interval: number
   },
   expBack?: Opts$ExpBack
@@ -81,9 +105,22 @@ export class UtilsGDrive {
 
   /**
    * Base class containing utils-google-drive methods.
+   * 
+   * The token and credentials used for authentication can be
+   * provided as strings or objects during initialization (`auth.token` and `auth.credentials`).
+   * Alternatively, paths to the token and credentials can be provided (`auth.pathToken` and `auth.pathCredentials`).
+   * 
+   * The token is retreived from ./tokenGDrive.json when
+   * neither `auth.token` nor `auth.pathToken` is specified.
+   * Similarly, the credentials are retreived from ./credentialsGDrive.json when
+   * neither `auth.credentials` nor `auth.pathCredentials` is specified.
+   * 
+   * Use `opts.rateLimiter` and `opts.expBack` to set rate-limiting and exponential backoff behaviors for API calls.
+   * The default rate limit is 1,000 queries per 100 seconds.
+   * The default behavior for exponential backoff is retrying up to three times for any error thrown. 
    */
-  constructor(params: Params$UtilsGDrive = {}, opts: Opts$UtilsGDrive = {}) {
-    if (params === null) params = {};
+  constructor(auth: Auth$UtilsGDrive = {}, opts: Opts$UtilsGDrive = {}) {
+    if (auth === null) auth = {};
 
     // rate limit
     if (!opts.rateLimiter) opts.rateLimiter = { tokensPerInterval: 1000, interval: 100*1000 };
@@ -94,7 +131,7 @@ export class UtilsGDrive {
     this.optsExpBack = opts.expBack;
 
     // client
-    this.drive = getDrive(params);
+    this.drive = getDrive(auth);
 
     // methods
     this.batch = batch;

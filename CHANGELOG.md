@@ -1,6 +1,6 @@
 ### v5.0.0 — *October 24, 2022*
 * Converted package from JavaScript to TypeScript
-* Moved script for getting token to be stand-alone (getTokenGDrive.js)
+* Moved getting token for accessing Google Drive API to be stand-alone function (getTokenGDrive.js)
 * Added initialization options for `UtilsGDrive` class constructor
 * Added rate limiting for api calls
 * Added exponential backoff for api calls
