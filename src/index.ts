@@ -24,7 +24,7 @@ import { upload } from './methods/upload';
 
 import { Credentials$GoogleApi } from './utils/getOAuth2Client';
 import { Token$GoogleApi } from './utils/getDrive';
-import { Opts$ExpBack, ShouldRetry$ExpBack } from './utils/ApplyExpBack';
+import { Opts$ExpBack } from './utils/ApplyExpBack';
 
 export { Identifiers } from './utils/utilsMethods';
 
@@ -54,9 +54,9 @@ export interface Opts$UtilsGDrive {
   expBack?: Opts$ExpBack
 }
 
-export { Opts$ExpBack, ShouldRetry$ExpBack };
+export { Opts$ExpBack };
 
-export { getTokenGDrive } from './utils/getToken';
+export { getTokenGDrive, Params$GetTokenGDrive } from './utils/getTokenGDrive';
 
 export class UtilsGDrive {
   public limiter: RateLimiter;
