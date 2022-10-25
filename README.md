@@ -24,7 +24,10 @@ Also features:
 ## **Examples**
 ```javascript
 const { UtilsGDrive } = require("utils-google-drive");
-const utilsGDrive = new UtilsGDrive();
+const utilsGDrive = new UtilsGDrive({
+  pathCredentials: "path/to/credentials.json",
+  pathToken: "path/to/token.json"
+});
  
 // get id of file in Google Drive whose name is "todos.txt"
 // and whose parent folder is named "lists"
@@ -79,7 +82,7 @@ const requests = [
 ];
 
 utilsGDrive.batch(requests).then(responses => {
-  console.log(responses)
+  console.log(responses);
 });
 
 ```
@@ -94,11 +97,11 @@ You'll need to set up a Google Cloud project to access your user account's Googl
 need to enable the Google Drive API and create desktop application credentials in the Google Cloud Console.
 Consult this [quickstart](https://developers.google.com/drive/api/v3/quickstart/nodejs) for steps on how to complete these prerequisites. Be sure you're logged in to the correct Google account when completing these tasks.
 
-You'll also need to get an access token after you've downloaded the OAuth 2.0 credentials. A stand-alone function named `getTokenGDrive` is included in this package and facilitates obtaining an access token. Simply import the function and call it:
+You'll also need to get an access token after you've downloaded the credentials from the Google Cloud Console. A stand-alone function named `getTokenGDrive` is included in this package and facilitates obtaining an access token. Simply import the function and call it:
 
 ```javascript
 const { getTokenGDrive } = require("utils-google-drive");
-getTokenGDrive({ pathCredentials: "path/to/oAuthCredentials.json" }).catch(console.error);
+getTokenGDrive({ pathCredentials: "path/to/credentials.json" }).catch(console.error);
 
 ```
 
@@ -107,11 +110,11 @@ utils-google-drive allows files and folders in Google Drive to be specified by e
 
 Objects with the properties `fileId`, `fileName`, `parentId`, and `parentName` are generally used to specify a file or folder and are passed as arguments to utils-google-drive methods. For convenience, a string containing the file/folder id or path to the file or folder in Google Drive may be passed instead.
 
-If specifying a path, partial paths can be used and are encouraged. Ideally, you would specify a partial path that contains just enough information to uniquely identify the file in Google Drive. For example, suppose you wanted to download the file "annualReport.pdf" in the folder "reports". If there are multiple files named "annualReport.pdf" in Google Drive but no other folders with the name "reports", you could use the partial path "reports/annualReport.pdf" to identify the file of interest. This path is preferable to a longer one because it finds the file quicker, jumping in at the uniquely named folder "reports" and not worrying itself with folders that are higher up in the file path.
+If specifying a path, partial paths can be used and are encouraged. Ideally, you would specify a partial path that contains just enough information to uniquely identify the file in Google Drive. For example, suppose you wanted to download the file "annualReport.pdf" in the folder "reports_2022". If there are multiple files named "annualReport.pdf" in Google Drive but no other folders with the name "reports_2022", you could use the partial path "reports_2022/annualReport.pdf" to identify the file of interest. This path is preferable to a longer one because it finds the file quicker, jumping in at the uniquely named folder "reports_2022" and not worrying itself with folders that are higher up in the file path.
 
 There is some variation regarding how to specify a file or folder across utils-google-drive methods. When in doubt, consult the [docs](https://curtcommander.github.io/utils-google-drive/).
 
-As a best practice, favor specifying ids over filenames. Under the hood, a filename is resolved to an id with an extra API call. Specify and work with ids where you can to avoid these extra API calls and improve performance.
+As a best practice, favor specifying ids over filenames. Under the hood, a filename is resolved to an id with an extra API call. Specify and work with ids where you can to avoid making these extra API calls and improve performance.
 
 ## **Rate Limiting**
 
@@ -142,7 +145,7 @@ const { UtilsGDrive } = require("utils-google-drive");
 const utilsGDrive = new UtilsGDrive(null, {
   expBack: {
     // only 5xx errors should be retried
-    shouldRetry: error => error.status >= 500,
+    shouldRetry: error => Number(error.code) >= 500,
     // max mumber of retries is 5
     maxRetries: 5
   }
