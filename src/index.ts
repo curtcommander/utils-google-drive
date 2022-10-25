@@ -116,7 +116,7 @@ export class UtilsGDrive {
    * neither `auth.credentials` nor `auth.pathCredentials` is specified.
    * 
    * Use `opts.rateLimiter` and `opts.expBack` to set rate-limiting and exponential backoff behaviors for API calls.
-   * The default rate limit is 1,000 queries per 100 seconds.
+   * The default rate limit is 1,000 requests per 100 seconds.
    * The default behavior for exponential backoff is retrying up to three times for any error thrown. 
    */
   constructor(auth: Auth$UtilsGDrive = {}, opts: Opts$UtilsGDrive = {}) {
