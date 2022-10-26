@@ -1,3 +1,6 @@
+### v5.0.1 — *October 25, 2022*
+* Removed comment about interval for rate limiting of less than 200ms causing performance issues
+
 ### v5.0.0 — *October 24, 2022*
 * Converted package from JavaScript to TypeScript
 * Moved getting token for accessing Google Drive API to be stand-alone function (getTokenGDrive.js)

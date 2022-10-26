@@ -133,8 +133,6 @@ const utilsGDrive = new UtilsGDrive(null, {
 
 ```
 
-Note that setting an interval of less than 200ms can cause performance issues.
-
 ## **Exponential Backoff**
 
 You can also configure how exponential backoff is implemented as one of the `UtilsGDrive` base class's options. An API call is retried a maximum of three times for any error thrown by default, but you can change the max number of retries as well as provide your own function for determining what errors warrant a retry.
