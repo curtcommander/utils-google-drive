@@ -144,7 +144,7 @@ const utilsGDrive = new UtilsGDrive(null, {
   expBack: {
     // only 5xx errors should be retried
     shouldRetry: error => Number(error.code) >= 500,
-    // max mumber of retries is 5
+    // max number of retries is 5
     maxRetries: 5
   }
 });
