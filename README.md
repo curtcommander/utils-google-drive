@@ -23,60 +23,60 @@ Also features:
  
 ## **Examples**
 ```javascript
-const { UtilsGDrive } = require("utils-google-drive");
+const { UtilsGDrive } = require('utils-google-drive');
 const utilsGDrive = new UtilsGDrive({
-  pathCredentials: "path/to/credentials.json",
-  pathToken: "path/to/token.json"
+  pathCredentials: 'path/to/credentials.json',
+  pathToken: 'path/to/token.json'
 });
  
-// get id of file in Google Drive whose name is "todos.txt"
-// and whose parent folder is named "lists"
+// get id of file in Google Drive whose name is 'todos.txt'
+// and whose parent folder is named 'lists'
 utilsGDrive.getFileId({
-  fileName: "todos.txt",
-  parentName: "lists"
+  fileName: 'todos.txt',
+  parentName: 'lists'
 }).then(fileId => { console.log(fileId) });
 
-// download file "transactions.xlsx" in the folder "dataDrive"
-// to the local folder "dataLocal"
+// download file 'transactions.xlsx' in the folder 'dataDrive'
+// to the local folder 'dataLocal'
 utilsGDrive.download({
-  fileName: "transactions.xlsx",
-  parentName: "dataDrive"
-}, "path/to/dataLocal");
+  fileName: 'transactions.xlsx',
+  parentName: 'dataDrive'
+}, 'path/to/dataLocal');
 
-// upload file "report.pdf" to the folder in Google Drive
-// with the id "XXX123XXX"
+// upload file 'report.pdf' to the folder in Google Drive
+// with the id 'XXX123XXX'
 utilsGDrive.upload({
-  localPath: "path/to/report.pdf",
-  parentIdentifiers: "XXX123XXX" 
+  localPath: 'path/to/report.pdf',
+  parentIdentifiers: 'XXX123XXX' 
 });
 
-// move folder "2022" to the folder "reports"
-utilsGDrive.move("path/to/2022", "path/to/reports");
+// move folder '2022' to the folder 'reports'
+utilsGDrive.move('path/to/2022', 'path/to/reports');
 
-// change name of folder from "repolts" to "reports"
-utilsGDrive.rename({folderName: "repolts"}, "reports");
+// change name of folder from 'repolts' to 'reports'
+utilsGDrive.rename({folderName: 'repolts'}, 'reports');
 
-// delete file with id "XXX123XXX"
-utilsGDrive.del("XXX123XXX");
+// delete file with id 'XXX123XXX'
+utilsGDrive.del('XXX123XXX');
 
-// make a new folder named "Colombia" in the folder "countries"
+// make a new folder named 'Colombia' in the folder 'countries'
 utilsGDrive.makeFolder({
-  folderName: "Colombia",
-  parentIdentifiers: { fileName: "countries" }
+  folderName: 'Colombia',
+  parentIdentifiers: { fileName: 'countries' }
 });
 
 // make a batch request
 const requests = [
   {
-    url: "https://www.googleapis.com/drive/v3/files?q=name%20%3D%20%22Daily%20Logs%22",
-    method: "GET",
+    url: 'https://www.googleapis.com/drive/v3/files?q=name%20%3D%20%22FILE%22',
+    method: 'GET',
   },
   {
-    url: "https://www.googleapis.com/drive/v3/files/fileId/watch",
-    method: "POST",
+    url: 'https://www.googleapis.com/drive/v3/files/fileId/watch',
+    method: 'POST',
     data: {
-      "kind": "api#channel",
-      "id": "channelId"
+      'kind': 'api#channel',
+      'id': 'channelId'
     }
   }
 ];
@@ -100,8 +100,8 @@ Consult this [quickstart](https://developers.google.com/drive/api/v3/quickstart/
 You'll also need to get an access token after you've downloaded the credentials from the Google Cloud Console. A stand-alone function named `getTokenGDrive` is included in this package and facilitates obtaining an access token. Simply import the function and call it:
 
 ```javascript
-const { getTokenGDrive } = require("utils-google-drive");
-getTokenGDrive({ pathCredentials: "path/to/credentials.json" }).catch(console.error);
+const { getTokenGDrive } = require('utils-google-drive');
+getTokenGDrive({ pathCredentials: 'path/to/credentials.json' });
 
 ```
 
@@ -121,7 +121,7 @@ As a best practice, favor specifying ids over filenames. Under the hood, a filen
 utils-google-drive performs client-side rate limiting. The default is 1,000 requests per 100 seconds, which is the same as Google's default per-user rate limit. You can configure the rate limit as an option when initializing the `UtilsGDrive` base class:
 
 ```javascript
-const { UtilsGDrive } = require("utils-google-drive");
+const { UtilsGDrive } = require('utils-google-drive');
 
 const utilsGDrive = new UtilsGDrive(null, {
   // rate limit of 10 requests per second
@@ -138,7 +138,7 @@ const utilsGDrive = new UtilsGDrive(null, {
 You can also configure how exponential backoff is implemented as one of the `UtilsGDrive` base class's options. An API call is retried a maximum of three times for any error thrown by default, but you can change the max number of retries as well as provide your own function for determining what errors warrant a retry.
 
 ```javascript
-const { UtilsGDrive } = require("utils-google-drive");
+const { UtilsGDrive } = require('utils-google-drive');
 
 const utilsGDrive = new UtilsGDrive(null, {
   expBack: {
