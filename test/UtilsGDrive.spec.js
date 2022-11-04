@@ -1,10 +1,10 @@
 'use strict';
 
-const { initialization } = require('./modules/initialization');
-const { api } = require('./modules/api');
-const { resolveIdentifiers } = require('./modules/resolveIdentifiers');
-const { errors } = require('./modules/errors');
-const { methods } = require('./modules/methods');
+const { initialization } = require('./suites/initialization');
+const { api } = require('./suites/api');
+const { resolveIdentifiers } = require('./suites/resolveIdentifiers');
+const { errors } = require('./suites/errors');
+const { methods } = require('./suites/methods');
 
 describe('UtilsGDrive', function() {
   this.timeout(10000);
