@@ -37,23 +37,25 @@ function methods(timeout) {
       assert(responseData);
     })
 
-    it('getFileId(), file id given as object property', async function() {
-      const fileId = await utilsGDrive.getFileId({
-        fileName: vals.fileNameTest,
-        parentId: vals.parentIdTest,
+    describe('getFileId()', function() {
+      it('file id given as object property', async function() {
+        const fileId = await utilsGDrive.getFileId({
+          fileName: vals.fileNameTest,
+          parentId: vals.parentIdTest,
+        })
+        assert(fileId === vals.fileIdTest);
       })
-      assert(fileId === vals.fileIdTest);
-    })
-
-    it('getFileId(), filename given as string', async function() {
-      const fileId = await utilsGDrive.getFileId(vals.fileNameTest);
-      assert(fileId === vals.fileIdTest);
-    })
-
-    it('getFileId(), path given as string', async function() {
-      const p = [vals.parentNameTest, vals.fileNameTest].join(path.sep);
-      const fileId = await utilsGDrive.getFileId(p);
-      assert(fileId === vals.fileIdTest);
+  
+      it('filename given as string', async function() {
+        const fileId = await utilsGDrive.getFileId(vals.fileNameTest);
+        assert(fileId === vals.fileIdTest);
+      })
+  
+      it('path given as string', async function() {
+        const p = [vals.parentNameTest, vals.fileNameTest].join(path.sep);
+        const fileId = await utilsGDrive.getFileId(p);
+        assert(fileId === vals.fileIdTest);
+      })
     })
 
     it('getFileName()', async function() {
@@ -189,7 +191,5 @@ function methods(timeout) {
       const secondResponse = (responses[1].responseStatus === 200 && responses[1].responseData);
       assert(firstResponse && secondResponse);
     })
-
   })
-
 }

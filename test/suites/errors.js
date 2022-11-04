@@ -49,60 +49,60 @@ function errors(timeout) {
             }, utilsGDrive.Error);
         })
 
-        it('getMimeType(), invalid identifier name', async function() {
-            assert.rejects(async () => {
-                await utilsGDrive.getMimeType({f: fileIdTest});
-            })
-        })
-
-        it('listChildren(), invalid identifier name', async function() {
-            assert.rejects(async () => {
-                await utilsGDrive.listChildren({f: fileIdTest}, 'files(id)');
-            })
-        })
-
-        it('download(), invalid identifier name', async function() {
-            assert.rejects(async () => {
-                await utilsGDrive.download({f: 'test'}, '.');
-            })
-        })
-
-        it('upload(), invalid identifier name', async function() {
-            assert.rejects(async () => {
-                await utilsGDrive.upload({
-                    localPath: 'test',
-                    parentIdentifiers: {f: 'test'},
+        describe('invalid identifier name', function() {
+            it('getMimeType()', async function() {
+                assert.rejects(async () => {
+                    await utilsGDrive.getMimeType({f: fileIdTest});
                 })
             })
-        })
-
-        it('makeFolder(), invalid identifier name', async function() {
-            assert.rejects(async () => {
-                await utilsGDrive.makeFolder({
-                    folderName: 'test',
-                    parentIdentifiers: {f: 'test'},
-                })
-            })
-        })
-
-        it('move(), invalid identifier name', async function() {
-            assert.rejects(async () => {
-                await utilsGDrive.move({f: 'test'});
-            })
-        })
-
-        it('rename(), invalid identifier name', async function() {
-            assert.rejects(async () => {
-                await utilsGDrive.rename({f: 'test'});
-            })
-        })
-
-        it('del(), invalid identifier name', async function() {
-            assert.rejects(async () => {
-                await utilsGDrive.del({f: fileIdTest});
-            })
-        })
-
-    })
     
+            it('listChildren()', async function() {
+                assert.rejects(async () => {
+                    await utilsGDrive.listChildren({f: fileIdTest}, 'files(id)');
+                })
+            })
+    
+            it('download()', async function() {
+                assert.rejects(async () => {
+                    await utilsGDrive.download({f: 'test'}, '.');
+                })
+            })
+    
+            it('upload()', async function() {
+                assert.rejects(async () => {
+                    await utilsGDrive.upload({
+                        localPath: 'test',
+                        parentIdentifiers: {f: 'test'},
+                    })
+                })
+            })
+    
+            it('makeFolder()', async function() {
+                assert.rejects(async () => {
+                    await utilsGDrive.makeFolder({
+                        folderName: 'test',
+                        parentIdentifiers: {f: 'test'},
+                    })
+                })
+            })
+    
+            it('move()', async function() {
+                assert.rejects(async () => {
+                    await utilsGDrive.move({f: 'test'});
+                })
+            })
+    
+            it('rename()', async function() {
+                assert.rejects(async () => {
+                    await utilsGDrive.rename({f: 'test'});
+                })
+            })
+    
+            it('del()', async function() {
+                assert.rejects(async () => {
+                    await utilsGDrive.del({f: fileIdTest});
+                })
+            })
+        })
+    })
 }

@@ -64,7 +64,5 @@ function initialization(timeout) {
             new UtilsGDrive(null, {});
             assert(true);
         })
-    
     })
-    
 }

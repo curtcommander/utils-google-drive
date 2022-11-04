@@ -14,20 +14,20 @@ module.exports = { resolveIdentifiers };
 
 function resolveIdentifiers(timeout) {
     
-  describe('resolve identifiers', function() {
+  describe('resolve identifiers using utils.resolveId()', function() {
     if (timeout) this.timeout(timeout);
 
-    it('utils.resolveId(), default to root', async function() {
+    it('default to root', async function() {
       const fileId = await utils.resolveId(utilsGDrive);
       assert(fileId === 'root');
     })
 
-    it('utils.resolveId(), file id given as string', async function() {
+    it('file id given as string', async function() {
       const fileId = await utils.resolveId(utilsGDrive, vals.fileIdTest);
       assert(fileId === vals.fileIdTest);
     })
 
-    it('utils.resolveId(), file id given as object property', async function() {
+    it('file id given as object property', async function() {
       const fileId = await utils.resolveId(utilsGDrive, {
         fileId: vals.fileIdTest,
         fileName: 'testName',
@@ -36,18 +36,18 @@ function resolveIdentifiers(timeout) {
       assert(fileId === vals.fileIdTest);
     })
 
-    it('utils.resolveId(), path given as string', async function() {
+    it('path given as string', async function() {
       const p = [vals.parentNameTest, vals.fileNameTest].join(path.sep);
       const fileId = await utils.resolveId(utilsGDrive, p);
       assert(fileId === vals.fileIdTest);
     })
 
-    it('utils.resolveId(), filename given', async function() {
+    it('filename given', async function() {
       const fileId = await utils.resolveId(utilsGDrive, { fileName: vals.parentNameTest });
       assert(fileId === vals.parentIdTest);
     })
 
-    it('utils.resolveId(), filename and parent id given', async function() {
+    it('filename and parent id given', async function() {
       const fileId = await utils.resolveId(utilsGDrive, {
         fileName: vals.fileNameTest,
         parentId: vals.parentIdTest,
@@ -55,14 +55,12 @@ function resolveIdentifiers(timeout) {
       assert(fileId == vals.fileIdTest);
     })
 
-    it('utils.resolveId(), filename and parent name given', async function() {
+    it('filename and parent name given', async function() {
       const fileId = await utils.resolveId(utilsGDrive, {
         fileName: vals.fileNameTest,
         parentName: vals.parentNameTest,
       })
       assert(fileId === vals.fileIdTest);
     })
-
   })
-  
 }
