@@ -1,7 +1,7 @@
 # **utils-google-drive**
 [![Build Status](https://app.travis-ci.com/curtcommander/utils-google-drive.svg?token=jR69Hp9NULPTcnnmq5Z7&branch=main)](https://app.travis-ci.com/curtcommander/utils-google-drive)
 [![npm version](https://badge.fury.io/js/utils-google-drive.svg)](https://www.npmjs.com/package/utils-google-drive)
-[![repo](https://img.shields.io/badge/repo-gray.svg)](https://github.com/curtcommander/utils-google-drive)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![docs](https://img.shields.io/badge/docs-gray.svg)](https://curtcommander.github.io/utils-google-drive/)
 
 A simple and flexible package for interacting with Google Drive.
