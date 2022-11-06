@@ -10,7 +10,7 @@ import { Identifiers$GetFileId } from '../methods/getFileId';
 /**
  * Values for identifying a file or folder in Google Drive.
  * `fileName` is required if `fileId` is not specified.
- * If `fileName` is specified and there are multiple files 
+ * If `fileName` is specified and there are multiple files
  * or folders in Google Drive with that filename,
  * `parentId` or `parentName` should also be specified.
  */
@@ -18,27 +18,31 @@ export interface Identifiers {
   /**
    * Id of the file or folder.
    */
-  fileId?: string,
+  fileId?: string;
   /**
    * Name of the file or folder.
    */
-  fileName?: string,
+  fileName?: string;
   /**
    * Id of the file or folder's parent.
    */
-  parentId?: string,
+  parentId?: string;
   /**
    * Name of the file or folder's parent.
    */
-  parentName?: string
+  parentName?: string;
 }
 
-export function resolveId(utilsGDrive: UtilsGDrive, identifiers?: Identifiers | string): string | Promise<string> {
+export function resolveId(
+  utilsGDrive: UtilsGDrive,
+  identifiers?: Identifiers | string
+): string | Promise<string> {
   // default to root
   if (!identifiers) return 'root';
 
   // handle string
-  if (typeof(identifiers) === 'string') return resolveIdString(utilsGDrive, identifiers);
+  if (typeof identifiers === 'string')
+    return resolveIdString(utilsGDrive, identifiers);
 
   // pass fileId through if already specified
   if (identifiers.fileId) return identifiers.fileId;
@@ -54,7 +58,10 @@ export function resolveId(utilsGDrive: UtilsGDrive, identifiers?: Identifiers | 
   return utilsGDrive.getFileId(identifiers as Identifiers$GetFileId);
 }
 
-export async function resolveIdString(utilsGDrive: UtilsGDrive, str: string): Promise<string> {
+export async function resolveIdString(
+  utilsGDrive: UtilsGDrive,
+  str: string
+): Promise<string> {
   const names = str.split(path.sep);
   if (names.length === 1) return names[0];
 
@@ -72,22 +79,25 @@ export async function resolveIdString(utilsGDrive: UtilsGDrive, str: string): Pr
 /**
  * Metadata for identifying files and folders to be overwritten in Google Drive.
  */
-export type FileMetadata$Overwrite = {
+export interface FileMetadata$Overwrite {
   /**
    * Name of file or folder being written or created.
    */
-  name: string,
+  name: string;
   /**
    * MIME type of file or folder beign written or created.
    */
-  mimeType: string,
+  mimeType: string;
   /**
    * Ids of parents of file or folder being written or created.
    */
-  parents: string[]
+  parents: string[];
 }
 
-export async function overwrite(utilsGDrive: UtilsGDrive, fileMetadata: FileMetadata$Overwrite) {
+export async function overwrite(
+  utilsGDrive: UtilsGDrive,
+  fileMetadata: FileMetadata$Overwrite
+): Promise<void> {
   const { name, mimeType, parents } = fileMetadata;
   const q = `name='${name}' and mimeType='${mimeType}' and '${parents[0]}' in parents and trashed=false`;
   const data = await utilsGDrive.listFiles({ q });

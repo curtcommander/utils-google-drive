@@ -8,6 +8,10 @@
     "dist"
   ],
   "scripts": {
+    "format": "npx prettier --write \"src/**/*.ts\"",
+    "format:check" : "npx prettier --check \"src/**/*.ts\"",
+    "lint": "npx eslint src/ --fix",
+    "lint:check": "npx eslint src/",
     "build": "rm -r ./dist/*; ./node_modules/.bin/tsc",
     "test": "./node_modules/mocha/bin/mocha --ignore test/getTokenGDrive.js",
     "test:getToken": "./test/getTokenGDrive.",
@@ -34,8 +38,16 @@
   },
   "devDependencies": {
     "@types/node": "^18.11.3",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "eslint": "^8.27.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.5.0",
+    "eslint-plugin-promise": "^6.1.1",
     "mocha": "^9.2.2",
+    "prettier": "2.7.1",
     "typedoc": "^0.23.18",
-    "typescript": "^4.8.2"
+    "typescript": "^4.8.4"
   }
 }

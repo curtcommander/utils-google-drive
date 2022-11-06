@@ -5,4 +5,4 @@ export class UtilsGDriveError extends Error {
     super(message);
     this.name = 'UtilsGDriveError';
   }
-};
+}

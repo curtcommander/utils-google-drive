@@ -3,7 +3,11 @@
 import * as fs from 'fs';
 import * as readline from 'readline';
 
-import { Credentials$GoogleApi, getOAuth2Client, resolveCredentials } from './getOAuth2Client';
+import {
+  Credentials$GoogleApi,
+  getOAuth2Client,
+  resolveCredentials,
+} from './getOAuth2Client';
 
 /**
  * Parameters for getting a token for accessing Google Drive API.
@@ -12,21 +16,21 @@ export interface Params$GetTokenGDrive {
   /**
    * Authentication credentials.
    */
-  credentials?: string | Credentials$GoogleApi,
+  credentials?: string | Credentials$GoogleApi;
   /**
    * Path to file containing authentication credentials.
    */
-  pathCredentials?: string,
+  pathCredentials?: string;
   /**
    * OAuth 2.0 scope for accessing Google Drive API.
    * Consult https://developers.google.com/identity/protocols/oauth2/scopes
    * for details on the scopes to choose from.
    */
-  scope?: string,
+  scope?: string;
   /**
    * Location where token should be written.
    */
-  pathOut?: string
+  pathOut?: string;
 }
 
 /**
@@ -34,16 +38,23 @@ export interface Params$GetTokenGDrive {
  * Default scope is `https://www.googleapis.com/auth/drive` if `params.scope` isn't specified.
  * Writes to ./tokenGDrive.json if `params.pathOut` isn't specified.
  */
-export function getTokenGDrive(params: Params$GetTokenGDrive = {
-  scope: 'https://www.googleapis.com/auth/drive',
-  pathOut: 'tokenGDrive.json'
-}): Promise<void> {
+export async function getTokenGDrive(
+  params: Params$GetTokenGDrive = {}
+): Promise<void> {
+  let scope: string;
+  params.scope
+    ? (scope = params.scope)
+    : (scope = 'https://www.googleapis.com/auth/drive');
+
+  let pathOut: string;
+  params.pathOut ? (pathOut = params.pathOut) : (pathOut = 'tokenGDrive.json');
+
   const credentials = resolveCredentials(params);
   const oAuth2Client = getOAuth2Client(credentials);
 
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: 'offline',
-    scope: [params.scope],
+    scope: [scope],
   });
 
   console.log('Authorize this app by visiting this url:\n\n' + authUrl + '\n');
@@ -52,14 +63,17 @@ export function getTokenGDrive(params: Params$GetTokenGDrive = {
     output: process.stdout,
   });
 
-  return new Promise((resolve) => {
-    rl.question('Enter the code from that page here: ', async (code: string) => {
+  return await new Promise((resolve, reject) => {
+    rl.question('Enter the code from that page here: ', (code: string) => {
       rl.close();
-      const token = await oAuth2Client.getToken(code);
-      fs.writeFileSync(params.pathOut, JSON.stringify(token));
-      console.log(`Token stored to ${params.pathOut}\n`);
-      resolve();
-    })
-  })
+      oAuth2Client
+        .getToken(code)
+        .then((token) => {
+          fs.writeFileSync(pathOut, JSON.stringify(token));
+          console.log(`Token stored to ${pathOut}\n`);
+          resolve();
+        })
+        .catch((err) => reject(err));
+    });
+  });
 }
-

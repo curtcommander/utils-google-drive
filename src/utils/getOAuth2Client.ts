@@ -13,30 +13,40 @@ import { UtilsGDriveError } from './utilsGDriveError';
  */
 export interface Credentials$GoogleApi {
   installed: {
-      client_secret: string,
-      client_id: string,
-      redirect_uris: string
-  }
+    client_secret: string;
+    client_id: string;
+    redirect_uris: string;
+  };
 }
 
-export function getOAuth2Client(credentials: Credentials$GoogleApi): OAuth2Client {
+export function getOAuth2Client(
+  credentials: Credentials$GoogleApi
+): OAuth2Client {
+  /* eslint-disable @typescript-eslint/naming-convention */
   const { client_secret, client_id, redirect_uris } = credentials.installed;
-  const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+  const oAuth2Client = new google.auth.OAuth2(
+    client_id,
+    client_secret,
+    redirect_uris[0]
+  );
+  /* eslint-enable @typescript-eslint/naming-convention */
   return oAuth2Client;
 }
 
-export function resolveCredentials(auth: Auth$UtilsGDrive = {}): Credentials$GoogleApi {
-    if (auth.credentials) { 
-      if (typeof auth.credentials === 'string') return JSON.parse(auth.credentials);
-      return auth.credentials;
-    } else if (auth.pathCredentials) {
-        return JSON.parse(fs.readFileSync(auth.pathCredentials).toString());
-    } else {
-      try {
-        return JSON.parse(fs.readFileSync('credentialsGDrive.json').toString());
-      } catch (err) {
-        throw new UtilsGDriveError('Credentials not found.');
-      }
+export function resolveCredentials(
+  auth: Auth$UtilsGDrive = {}
+): Credentials$GoogleApi {
+  if (auth.credentials) {
+    if (typeof auth.credentials === 'string')
+      return JSON.parse(auth.credentials);
+    return auth.credentials;
+  } else if (auth.pathCredentials) {
+    return JSON.parse(fs.readFileSync(auth.pathCredentials).toString());
+  } else {
+    try {
+      return JSON.parse(fs.readFileSync('credentialsGDrive.json').toString());
+    } catch (err) {
+      throw new UtilsGDriveError('Credentials not found.');
     }
   }
-  
+}

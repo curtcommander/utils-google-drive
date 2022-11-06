@@ -15,15 +15,24 @@ export interface Call$Batch {
   /**
    * Url for calling Google Drive API.
    */
-  url: string,
+  url: string;
   /**
    * HTTP request method.
    */
-  method: 'GET' | 'HEAD' | 'POST' | 'DELETE' | 'PUT' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'PATCH',
+  method:
+    | 'GET'
+    | 'HEAD'
+    | 'POST'
+    | 'DELETE'
+    | 'PUT'
+    | 'CONNECT'
+    | 'OPTIONS'
+    | 'TRACE'
+    | 'PATCH';
   /**
    * Request body.
    */
-  data?: Record<string, any>
+  data?: Record<string, any>;
 }
 
 /**
@@ -33,31 +42,41 @@ export interface Response$Batch extends Call$Batch {
   /**
    * Response status.
    */
-  responseStatus: number,
+  responseStatus: number;
   /**
    * Response data.
    */
-  responseData: Record<string, any>
+  responseData: Record<string, any>;
 }
 
 /**
  * Make a batch request.
  */
-export async function batch(this: UtilsGDrive, calls: Call$Batch[]): Promise<Response$Batch[]>  { 
+export async function batch(
+  this: UtilsGDrive,
+  calls: Call$Batch[]
+): Promise<Response$Batch[]> {
   if (calls.length > 100) {
-    throw new UtilsGDriveError(`Number of calls in batch request exceeds limit of 100: ${calls.length}`);
+    throw new UtilsGDriveError(
+      `Number of calls in batch request exceeds limit of 100: ${calls.length}`
+    );
   }
 
   // refresh access token if needed
-  const credentials = (this.drive.permissions.context._options.auth as OAuth2Client).credentials;
+  const credentials = (
+    this.drive.permissions.context._options.auth as OAuth2Client
+  ).credentials;
   const tokenType = credentials.token_type;
   const accessToken = credentials.access_token;
-  let token = [ tokenType, accessToken ].join(' ');
+  let token = [tokenType, accessToken].join(' ');
 
   try {
     await ApplyExpBack(async () => {
       await this.limiter.removeTokens(1);
-      return gaxios.request({ ...calls[0], headers: { Authorization: token } });
+      return await gaxios.request({
+        ...calls[0],
+        headers: { Authorization: token },
+      });
     }, this.optsExpBack)();
   } catch (e) {
     if (e.response.status === 401) {
@@ -72,7 +91,7 @@ export async function batch(this: UtilsGDrive, calls: Call$Batch[]): Promise<Res
     const reqHeaders =
       `${call.method} ${call.url}\n` +
       `Authorization: ${token}\n` +
-      `Content-Type: application/json; charset=UTF-8`;
+      'Content-Type: application/json; charset=UTF-8';
     const reqText = reqHeaders + '\r\n\r\n' + JSON.stringify(call.data);
     reqTexts.push(reqText);
   }
@@ -90,14 +109,14 @@ export async function batch(this: UtilsGDrive, calls: Call$Batch[]): Promise<Res
   const batchRequestText = partTexts.slice(0, 2).join('') + `--${boundary}--`;
   const batchResponse = await ApplyExpBack(async () => {
     await this.limiter.removeTokens(1);
-    return gaxios.request<string>({
+    return await gaxios.request<string>({
       url: 'https://www.googleapis.com/batch/drive/v3',
       method: 'POST',
       headers: {
-        'Content-Type': 'multipart/mixed; boundary='+boundary,
+        'Content-Type': 'multipart/mixed; boundary=' + boundary,
       },
-      data: batchRequestText
-    })
+      data: batchRequestText,
+    });
   }, this.optsExpBack)();
 
   // parse batch response data
@@ -114,8 +133,8 @@ export async function batch(this: UtilsGDrive, calls: Call$Batch[]): Promise<Res
     const response: Response$Batch = {
       ...calls[i],
       responseStatus: status,
-      responseData: data
-    }
+      responseData: data,
+    };
     responses.push(response);
   }
 

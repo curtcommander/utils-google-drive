@@ -16,7 +16,7 @@ export async function listChildren(
   const folderId = await resolveId(this, identifiers);
   const listFilesParams: drive_v3.Params$Resource$Files$List = {
     q: `"${folderId}" in parents`,
-    fields
+    fields,
   };
   const data = await this.listFiles(listFilesParams);
   return data.files;

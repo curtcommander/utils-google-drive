@@ -14,18 +14,17 @@ export interface Identifiers$Download extends Identifiers {
   /**
    * MIME type of file to be downloaded.
    */
-  mimeType: string
+  mimeType: string;
 }
 
 /**
- * Download a file or folder in Google Drive. 
+ * Download a file or folder in Google Drive.
  */
 export async function download(
   this: UtilsGDrive,
   identifiers: Identifiers$Download | string,
   pathOut = '.'
 ): Promise<void> {
-
   // get file id
   let fileId: string;
   if (typeof identifiers === 'string') {
@@ -34,14 +33,18 @@ export async function download(
     fileId = identifiers.fileId;
   } else {
     fileId = await resolveId(this, identifiers);
-  }  
+  }
 
   // get file name and mime type
   let fileName: string;
   let mimeType: string;
-  if (typeof identifiers !== 'string' && identifiers.fileName && identifiers.mimeType) {
-      fileName = identifiers.fileName;
-      mimeType = identifiers.mimeType;
+  if (
+    typeof identifiers !== 'string' &&
+    identifiers.fileName &&
+    identifiers.mimeType
+  ) {
+    fileName = identifiers.fileName;
+    mimeType = identifiers.mimeType;
   } else {
     const metadata = await this.getFiles({ fileId, fields: 'name, mimeType' });
     fileName = metadata.name;
@@ -54,11 +57,11 @@ export async function download(
     await downloadFile(this, fileId, fileName, pathOut);
   }
 
-  async function handleFolderDownload(utilsGDrive: UtilsGDrive) {
+  async function handleFolderDownload(utilsGDrive: UtilsGDrive): Promise<void> {
     // make folder
     pathOut = path.join(pathOut, fileName);
     fs.mkdirSync(pathOut);
-  
+
     // download children
     const children = await utilsGDrive.listChildren({ fileId });
     if (children) {
@@ -68,14 +71,13 @@ export async function download(
           fileId: child.id,
           fileName: child.name,
           mimeType: child.mimeType,
-        }
+        };
         const download = utilsGDrive.download(identifiersChild, pathOut);
         downloads.push(download);
       }
       await Promise.all(downloads);
     }
   }
-
 }
 
 async function downloadFile(
@@ -87,15 +89,14 @@ async function downloadFile(
   const dest = fs.createWriteStream(path.join(pathOut, fileName));
   const params = { fileId, alt: 'media' };
 
-  return ApplyExpBack(async () => {
+  return await ApplyExpBack(async () => {
     await utilsGDrive.limiter.removeTokens(1);
-    const res = await utilsGDrive.drive.files.get(params, { responseType: 'stream' });
+    const res = await utilsGDrive.drive.files.get(params, {
+      responseType: 'stream',
+    });
 
     await new Promise((resolve, reject) => {
-      res.data
-        .on('error', reject)
-        .on('end', resolve)
-        .pipe(dest);
-    })
+      res.data.on('error', reject).on('end', resolve).pipe(dest);
+    });
   })();
 }

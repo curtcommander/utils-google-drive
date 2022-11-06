@@ -10,10 +10,14 @@ import { UtilsGDriveError } from '../utils/utilsGDriveError';
  * Consult https://developers.google.com/drive/api/v3/reference/files/update
  * for information on the request parameters.
  */
-export function updateFiles(
+export async function updateFiles(
   this: UtilsGDrive,
   params: drive_v3.Params$Resource$Files$Update = {}
 ): Promise<drive_v3.Schema$File> {
   if (!params.fileId) throw new UtilsGDriveError('File id not specified.');
-  return this.call<drive_v3.Params$Resource$Files$Update, drive_v3.Schema$File, 'files'>('files', 'update', params);
+  return await this.call<
+    drive_v3.Params$Resource$Files$Update,
+    drive_v3.Schema$File,
+    'files'
+  >('files', 'update', params);
 }

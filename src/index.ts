@@ -3,7 +3,7 @@
 import * as google from '@googleapis/drive';
 import { RateLimiter } from 'limiter';
 
-import { getDrive } from './utils/getDrive';
+import { getDrive, Token$GoogleApi } from './utils/getDrive';
 
 import { batch } from './methods/batch';
 import { call } from './methods/call';
@@ -22,7 +22,6 @@ import { updateFiles } from './methods/updateFiles';
 import { upload } from './methods/upload';
 
 import { Credentials$GoogleApi } from './utils/getOAuth2Client';
-import { Token$GoogleApi } from './utils/getDrive';
 import { Opts$ExpBack } from './utils/ApplyExpBack';
 
 export { Identifiers } from './utils/utilsMethods';
@@ -43,19 +42,19 @@ export interface Auth$UtilsGDrive {
   /**
    * The credentials used for authentication.
    */
-  credentials?: Credentials$GoogleApi | string,
+  credentials?: Credentials$GoogleApi | string;
   /**
    * The token used for authentication.
    */
-  token?: Token$GoogleApi | string,
+  token?: Token$GoogleApi | string;
   /**
    * Path to file containing credentials.
    */
-  pathCredentials?: string,
+  pathCredentials?: string;
   /**
    * Path to file containing token.
    */
-  pathToken?: string
+  pathToken?: string;
 }
 
 export { Credentials$GoogleApi, Token$GoogleApi };
@@ -68,13 +67,13 @@ export interface Opts$UtilsGDrive {
     /**
      * Number of API calls that can be made within given interval.
      */
-    tokensPerInterval: number,
+    tokensPerInterval: number;
     /**
      * Interval of time in miliseconds.
      */
-    interval: number
-  },
-  expBack?: Opts$ExpBack
+    interval: number;
+  };
+  expBack?: Opts$ExpBack;
 }
 
 export { Opts$ExpBack };
@@ -104,25 +103,26 @@ export class UtilsGDrive {
 
   /**
    * Base class containing utils-google-drive methods.
-   * 
+   *
    * The token and credentials used for authentication can be
    * provided as strings or objects during initialization (`auth.token` and `auth.credentials`).
    * Alternatively, paths to the token and credentials can be provided (`auth.pathToken` and `auth.pathCredentials`).
-   * 
+   *
    * The token is retreived from ./tokenGDrive.json when
    * neither `auth.token` nor `auth.pathToken` is specified.
    * Similarly, the credentials are retreived from ./credentialsGDrive.json when
    * neither `auth.credentials` nor `auth.pathCredentials` is specified.
-   * 
+   *
    * Use `opts.rateLimiter` and `opts.expBack` to set rate-limiting and exponential backoff behaviors for API calls.
    * The default rate limit is 1,000 requests per 100 seconds.
-   * The default behavior for exponential backoff is retrying up to three times for any error thrown. 
+   * The default behavior for exponential backoff is retrying up to three times for any error thrown.
    */
   constructor(auth: Auth$UtilsGDrive = {}, opts: Opts$UtilsGDrive = {}) {
     if (auth === null) auth = {};
 
     // rate limit
-    if (!opts.rateLimiter) opts.rateLimiter = { tokensPerInterval: 1000, interval: 100*1000 };
+    if (!opts.rateLimiter)
+      opts.rateLimiter = { tokensPerInterval: 1000, interval: 100 * 1000 };
     this.limiter = new RateLimiter(opts.rateLimiter);
 
     // exponential backoff

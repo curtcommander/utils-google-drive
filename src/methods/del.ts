@@ -11,8 +11,11 @@ import { resolveId, Identifiers } from '../utils/utilsMethods';
 export async function del(
   this: UtilsGDrive,
   identifiers: Identifiers | string
-) {
+): Promise<undefined> {
   const fileId = await resolveId(this, identifiers);
-  return this.call<drive_v3.Params$Resource$Files$Delete, void, 'files'>('files', 'delete', { fileId });
+  return await this.call<
+    drive_v3.Params$Resource$Files$Delete,
+    undefined,
+    'files'
+  >('files', 'delete', { fileId });
 }
-
