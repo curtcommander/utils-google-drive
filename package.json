@@ -16,11 +16,11 @@
     "lint:src:check": "npx eslint src/",
     "lint:test": "npx eslint test/ --fix",
     "lint:test:check": "npx eslint test/",
-    "build": "./build.sh",
+    "build": "./scripts/build.sh",
     "test": "npx vitest run --dir test/",
     "test:file": "npx vitest run $1",
     "test:getToken": "./test/getTokenGDrive.js",
-    "docs": "./generateDocs.sh",
+    "docs": "./scripts/generateDocs.sh",
     "encryptToken": "travis encrypt-file tokenGDrive.json --add",
     "encryptCreds": "travis encrypt-file credentialsGDrive.json --add"
   },
