@@ -10,6 +10,8 @@
   "scripts": {
     "format": "npx prettier --write \"src/**/*.ts\" \"test/**/*.js\"",
     "format:check": "npx prettier --check \"src/**/*.ts\" \"test/**/*.js\"",
+    "lint": "npm run lint:src && npm run lint:test",
+    "lint:check": "npm run lint:src:check && npm run lint:test:check",
     "lint:src": "npx eslint src/ --fix",
     "lint:src:check": "npx eslint src/",
     "lint:test": "npx eslint test/ --fix",
