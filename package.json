@@ -18,7 +18,9 @@
     "test": "npx vitest run --dir test/",
     "test:file": "npx vitest run $1",
     "test:getToken": "./test/getTokenGDrive.js",
-    "docs": "./generateDocs.sh"
+    "docs": "./generateDocs.sh",
+    "encryptToken": "travis encrypt-file tokenGDrive.json --add",
+    "encryptCreds": "travis encrypt-file credentialsGDrive.json --add"
   },
   "repository": {
     "type": "git",
