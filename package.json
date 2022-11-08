@@ -16,7 +16,7 @@
     "lint:src:check": "npx eslint src/",
     "lint:test": "npx eslint test/ --fix",
     "lint:test:check": "npx eslint test/",
-    "build": "./node_modules/.bin/tsc; rm -r ./dist/*; cp -r /tmp/utils-google-drive/* dist/ ",
+    "build": "./build.sh",
     "test": "npx vitest run --dir test/",
     "test:file": "npx vitest run $1",
     "test:getToken": "./test/getTokenGDrive.js",

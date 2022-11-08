@@ -13,7 +13,7 @@
     "noFallthroughCasesInSwitch": false,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
-    "outDir": "dist"
+    "outDir": "tmp"
   },
   "include": [ "src/index.ts" ]
 }
