@@ -8,71 +8,83 @@ import { ApplyExpBack } from '../dist/utils/ApplyExpBack';
 const maxRetries = 1;
 const timeouts = {
   1: 5000,
-  2: 10000
-}
+  2: 10000,
+};
 
 const timeout = timeouts[maxRetries];
 
 describe.concurrent('api', () => {
-  
   test('can make requests to api', async () => {
     const utilsGDrive = new UtilsGDrive();
 
     const res = await utilsGDrive.call('files', 'get', { fileId: 'root' });
 
-    expect(res).toBeTypeOf('object');    
-  })
+    expect(res).toBeTypeOf('object');
+  });
 
-  test('rate limits api calls', async () => {
-    const interval = 2000;
-    const utilsGDrive = new UtilsGDrive(null, {
-      rateLimiter: { tokensPerInterval: 1, interval }
-    });
+  test(
+    'rate limits api calls',
+    async () => {
+      const interval = 2000;
+      const utilsGDrive = new UtilsGDrive(null, {
+        rateLimiter: { tokensPerInterval: 1, interval },
+      });
 
-    const time = await timeAsyncFn(async () => {
-      await Promise.all([
-        utilsGDrive.getFileName('root'),
-        utilsGDrive.getFileName('root')
-      ]);
-    })
-    
-    expect(time).toBeGreaterThanOrEqual(interval);
-  }, timeout);
+      const time = await timeAsyncFn(async () => {
+        await Promise.all([
+          utilsGDrive.getFileName('root'),
+          utilsGDrive.getFileName('root'),
+        ]);
+      });
+
+      expect(time).toBeGreaterThanOrEqual(interval);
+    },
+    timeout
+  );
 
   describe('exponential backoff', () => {
-    
-    test.concurrent('doesn\'t retry when no error is thrown', async () => {
+    test.concurrent("doesn't retry when no error is thrown", async () => {
       const fn = vi.fn(() => true);
       const fnExpBackApplied = ApplyExpBack(fn, { maxRetries });
 
       await fnExpBackApplied().catch(() => {});
 
-      expect(fn).toHaveBeenCalledTimes(1);      
-    })
+      expect(fn).toHaveBeenCalledTimes(1);
+    });
 
-    test.concurrent('retries up to the max number of retries', async () => {
-      const fn = vi.fn(() => { throw new Error() });
-      const fnExpBackApplied = ApplyExpBack(fn, { maxRetries });
+    test.concurrent(
+      'retries up to the max number of retries',
+      async () => {
+        const fn = vi.fn(() => {
+          throw new Error();
+        });
+        const fnExpBackApplied = ApplyExpBack(fn, { maxRetries });
 
-      await fnExpBackApplied().catch(() => {});
+        await fnExpBackApplied().catch(() => {});
 
-      expect(fn).toHaveBeenCalledTimes(maxRetries + 1);
-    }, timeout)
-  
+        expect(fn).toHaveBeenCalledTimes(maxRetries + 1);
+      },
+      timeout
+    );
+
     const waitTime = getWaitTime(maxRetries);
-  
-    test.concurrent('delays execution on subsequent retries', async () => {
-      const fn = () => { throw new Error() };
-      const fnExpBackApplied = ApplyExpBack(fn, { maxRetries });
 
-      const time = await timeAsyncFn(fnExpBackApplied);
+    test.concurrent(
+      'delays execution on subsequent retries',
+      async () => {
+        const fn = () => {
+          throw new Error();
+        };
+        const fnExpBackApplied = ApplyExpBack(fn, { maxRetries });
 
-      expect(time).toBeGreaterThan(waitTime);
+        const time = await timeAsyncFn(fnExpBackApplied);
 
-    }, timeout)
-
-  })
-})
+        expect(time).toBeGreaterThan(waitTime);
+      },
+      timeout
+    );
+  });
+});
 
 async function timeAsyncFn(fn) {
   const start = new Date();
