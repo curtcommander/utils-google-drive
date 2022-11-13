@@ -1,3 +1,7 @@
+### v5.0.2 — *October 25, 2022*
+* Fixed typo in README
+* Added changelog and test files to package
+
 ### v5.0.1 — *October 25, 2022*
 * Removed comment about interval for rate limiting of less than 200ms causing performance issues
 
