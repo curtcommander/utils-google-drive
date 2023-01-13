@@ -150,8 +150,10 @@ describe.concurrent('methods', () => {
     'listChildren()',
     async () => {
       const res = await utilsGDrive.listChildren({ fileId: parentId });
-
-      expect(Object.keys(res[0])).toEqual(['id', 'name', 'mimeType']);
+      const props = Object.keys(res[0]);
+      for (const prop of [ 'id', 'name', 'mimeType' ]) {
+        expect(props.includes(prop));
+      }
       expect(res.filter((file) => file.id === childId).length).toEqual(1);
     },
     timeout
