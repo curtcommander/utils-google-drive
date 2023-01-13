@@ -1,6 +1,6 @@
 {
   "name": "utils-google-drive",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "A simple and flexible package for interacting with Google Drive",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
